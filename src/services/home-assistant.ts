@@ -1,5 +1,7 @@
 'use server';
 
+import 'dotenv/config';
+
 const HA_URL = process.env.HA_URL;
 const HA_TOKEN = process.env.HA_TOKEN;
 
