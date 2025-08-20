@@ -1,22 +1,28 @@
 'use server';
 
-const HA_URL = process.env.HA_URL;
-const HA_TOKEN = process.env.HA_TOKEN;
-
 const LOCK_ENTITY_ID = 'switch.sonoff_1000e6fcb0_1';
 const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
 
-if (!HA_URL || !HA_TOKEN) {
-    console.warn("Home Assistant URL or Token is not configured. Door control will not work.");
+function getHaConfig() {
+    const HA_URL = process.env.HA_URL;
+    const HA_TOKEN = process.env.HA_TOKEN;
+
+    if (!HA_URL || !HA_TOKEN) {
+        console.warn("Home Assistant URL or Token is not configured. Door control will not work.");
+        throw new Error('Home Assistant nav konfigurēts.');
+    }
+    
+    return { haUrl: HA_URL, haToken: HA_TOKEN };
 }
 
-async function callService(domain: string, service: string, serviceData: object) {
-    if (!HA_URL || !HA_TOKEN) throw new Error('Home Assistant nav konfigurēts.');
 
-    const response = await fetch(`${HA_URL}/api/services/${domain}/${service}`, {
+async function callService(domain: string, service: string, serviceData: object) {
+    const { haUrl, haToken } = getHaConfig();
+
+    const response = await fetch(`${haUrl}/api/services/${domain}/${service}`, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${HA_TOKEN}`,
+            'Authorization': `Bearer ${haToken}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(serviceData),
@@ -31,12 +37,12 @@ async function callService(domain: string, service: string, serviceData: object)
 }
 
 async function getEntityState(entityId: string): Promise<{ state: string }> {
-     if (!HA_URL || !HA_TOKEN) throw new Error('Home Assistant nav konfigurēts.');
+    const { haUrl, haToken } = getHaConfig();
 
-    const response = await fetch(`${HA_URL}/api/states/${entityId}`, {
+    const response = await fetch(`${haUrl}/api/states/${entityId}`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${HA_TOKEN}`,
+            'Authorization': `Bearer ${haToken}`,
             'Content-Type': 'application/json',
         },
     });
