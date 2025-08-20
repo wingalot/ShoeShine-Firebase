@@ -13,6 +13,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from 'lucide-react';
+import { unlockDoorAndAwaitOpen } from '@/services/home-assistant';
+
 
 const TEST_CODE = "111111";
 
@@ -25,17 +28,31 @@ interface CodeEntryDialogProps {
 export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDialogProps) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (code === TEST_CODE) {
-      toast({
-        title: "Veiksmīgi!",
-        description: "Skapītis atslēgts.",
-      });
-      onSuccess();
-      setCode('');
+      setIsLoading(true);
       setError('');
+      try {
+        toast({
+          title: "Atslēdz durvis...",
+          description: "Lūdzu, atveriet skapīša durvis.",
+        });
+        await unlockDoorAndAwaitOpen();
+        onSuccess();
+        setCode('');
+      } catch (error) {
+        console.error(error);
+        toast({
+            variant: "destructive",
+            title: "Kļūda",
+            description: (error instanceof Error) ? error.message : "Neizdevās atslēgt durvis.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       setError('Nepareizs kods. Mēģiniet vēlreiz.');
       toast({
@@ -83,17 +100,21 @@ export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDial
               className="col-span-3"
               type="password"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !isLoading) {
                   handleSubmit();
                 }
               }}
               autoFocus
+              disabled={isLoading}
             />
           </div>
           {error && <p className="text-sm font-medium text-destructive text-center col-span-4">{error}</p>}
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>Apstiprināt</Button>
+          <Button type="submit" onClick={handleSubmit} disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Apstiprināt
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
