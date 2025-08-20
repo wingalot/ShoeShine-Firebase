@@ -1,16 +1,31 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CodeEntryDialog } from '@/components/code-entry';
 import { cn } from '@/lib/utils';
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [isOccupied, setIsOccupied] = useState(false);
   const [isCodeDialogOpen, setIsCodeDialogOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (searchParams.get('placed') === 'true') {
+      setIsOccupied(true);
+      toast({
+        title: "Apavi ievietoti",
+        description: "Dezinfekcijas cikls ir sācies. Jūsu kods ir 111111.",
+      });
+      // Clean the URL
+      router.replace('/', {scroll: false});
+    }
+  }, [searchParams, router, toast]);
 
   const handleUnlockSuccess = () => {
     setIsOccupied(false);
@@ -23,11 +38,6 @@ export default function Home() {
       isOccupied ? "bg-gradient-to-br from-red-400 to-red-600" : "bg-background"
     )}>
       
-      <div className="absolute top-4 right-4 flex items-center space-x-2 bg-card/80 backdrop-blur-sm p-3 rounded-lg shadow-md border">
-        <Switch id="occupied-toggle" checked={isOccupied} onCheckedChange={setIsOccupied} />
-        <Label htmlFor="occupied-toggle">Skapītis aizņemts</Label>
-      </div>
-
       <div className="flex flex-col space-y-8 w-full max-w-md">
         <Button
           asChild

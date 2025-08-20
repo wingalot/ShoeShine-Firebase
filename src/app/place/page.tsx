@@ -10,10 +10,9 @@ export default function PlacePage() {
     const router = useRouter();
 
     const handlePlaceShoes = () => {
-        // In a real app, this would trigger an API call to start the disinfection
-        // and update the cabinet state. For this UI prototype, we just navigate
-        // back to the main menu. The state can be toggled manually from there.
-        router.push('/');
+        // Navigate to the main page and set the 'placed' query parameter to true
+        // to indicate the cabinet is now occupied.
+        router.push('/?placed=true');
     };
 
     return (
@@ -31,7 +30,7 @@ export default function PlacePage() {
                         className="w-full h-24 text-xl font-bold text-primary-foreground bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition-all duration-200 active:scale-95 active:opacity-90"
                         onClick={handlePlaceShoes}
                     >
-                        Ielikt apavus
+                        Apstiprināt un sākt ciklu
                     </Button>
                     <Button variant="outline" asChild>
                         <Link href="/" className="flex items-center justify-center">
