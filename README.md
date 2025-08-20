@@ -22,26 +22,17 @@ This is a Next.js application for controlling a shoe disinfection cabinet, integ
     ```bash
     npm install
     ```
-
-3.  **Set up environment variables:**
-    Copy the example environment file:
-    ```bash
-    cp .env.example .env
-    ```
-    Now, open the `.env` file and add your Home Assistant URL and a Long-Lived Access Token.
-    ```env
-    HA_URL="http://your-home-assistant-ip:8123"
-    HA_TOKEN="your-long-lived-access-token"
-    ```
-
-4.  **Build the application:**
+    
+3.  **Build the application:**
     ```bash
     npm run build
     ```
 
-5.  **Run the application:**
+4.  **Run the application:**
     ```bash
     npm start
     ```
 
 The application will be available at `http://<your-raspberry-pi-ip>:3000`.
+
+Your Home Assistant credentials are included in the `.env` file. For a production application, you should use a `.gitignore` file to prevent this file from being committed to version control.
