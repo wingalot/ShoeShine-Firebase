@@ -44,4 +44,4 @@ This is a Next.js application for controlling a shoe disinfection cabinet, integ
     npm start
     ```
 
-The application will be available at `http://localhost:3000`.
+The application will be available at `http://<your-raspberry-pi-ip>:3000`.
