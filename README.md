@@ -23,7 +23,7 @@ This is a Next.js application for controlling a shoe disinfection cabinet, integ
     npm install
     ```
     
-3.  **Build the application:**
+3.  **Build the application (IMPORTANT):**
     ```bash
     npm run build
     ```
