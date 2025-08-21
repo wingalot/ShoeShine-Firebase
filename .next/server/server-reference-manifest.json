@@ -16,10 +16,15 @@
         "app/page": {
           "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false
+        },
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
         }
       },
       "layer": {
-        "app/page": "action-browser"
+        "app/page": "action-browser",
+        "app/place/confirm/page": "action-browser"
       }
     },
     "402f3b69476f44da7dfc58196ae17593eafa89c5f8": {
@@ -42,6 +47,39 @@
       },
       "layer": {
         "app/page": "action-browser"
+      }
+    },
+    "00c3337b8c2cac0f6c3b58dc213e2b378176a07227": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
+      }
+    },
+    "00ff896f99e7593a911e9a4d76d3e311940c7a0e65": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
+      }
+    },
+    "40c692b51c4f41089214b94b35d452efd1e00478e5": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
       }
     }
   },
