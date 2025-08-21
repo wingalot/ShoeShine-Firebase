@@ -19,7 +19,10 @@ const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
 const HEAT_ENTITY_ID = 'switch.sonoff_1000e6fcb0_4';
 const UV_ENTITY_ID = 'switch.sonoff_1000e6fcb0_3';
 const FANS_ENTITY_ID = 'switch.sonoff_1000e6fcb0_2';
+const MOTOR_ENTITY_ID = 'switch.sonoff_1000f85860';
+
 const CLEANING_CYCLE_DURATION_MS = 14 * 60 * 1000; // 14 minutes
+const VENTILATION_CYCLE_DURATION_MS = 1 * 60 * 1000; // 1 minute
 
 async function callService(domain: string, service: string, serviceData: object) {
     const { haUrl, haToken } = getHaConfig();
@@ -109,7 +112,8 @@ export async function awaitDoorClose() {
 }
 
 /**
- * Stops the cleaning cycle by turning off all related switches.
+ * Stops the cleaning cycle by turning off all related switches,
+ * and then starts the ventilation cycle.
  */
 export async function stopCleaningCycle() {
     console.log("Beidzas tīrīšanas cikls...");
@@ -119,7 +123,22 @@ export async function stopCleaningCycle() {
             turnOffSwitch(UV_ENTITY_ID),
             turnOffSwitch(FANS_ENTITY_ID)
         ]);
-        console.log("Siltums, UV-C un ventilatori ir izslēgti.");
+        console.log("Siltums, UV-C un ventilatori ir izslēgti. Sākas vēdināšanas cikls.");
+        
+        // Start ventilation cycle
+        await turnOnSwitch(MOTOR_ENTITY_ID);
+        console.log("Motors ieslēgts uz 1 minūti.");
+
+        // Schedule motor to turn off
+        setTimeout(async () => {
+            try {
+                await turnOffSwitch(MOTOR_ENTITY_ID);
+                console.log("Vēdināšanas cikls beidzies, motors izslēgts.");
+            } catch (error) {
+                 console.error("Kļūda, izslēdzot motoru:", error);
+            }
+        }, VENTILATION_CYCLE_DURATION_MS);
+
     } catch (error) {
         console.error("Kļūda, beidzot tīrīšanas ciklu:", error);
     }
