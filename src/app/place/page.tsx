@@ -7,33 +7,57 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { unlockDoorAndAwaitOpen } from '@/services/home-assistant';
+import { 
+    unlockDoorAndAwaitOpen, 
+    awaitDoorClose,
+    startCleaningCycle,
+    stopCleaningCycle
+} from '@/services/home-assistant';
 
 
 export default function PlacePage() {
     const router = useRouter();
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState('Nospiediet pogu, lai atslēgtu skapīti, ievietotu apavus un sāktu dezinfekcijas ciklu.');
 
     const handlePlaceShoes = async () => {
         setIsLoading(true);
         try {
+            setStatusMessage("Atslēdz durvis...");
             toast({
                 title: "Atslēdz durvis...",
                 description: "Lūdzu, atveriet skapīša durvis.",
             });
             await unlockDoorAndAwaitOpen();
-            // Once the door is opened, the user can place the shoes.
-            // When they close the door, we can proceed.
-            // For now, we assume they do it and we navigate.
+            
+            setStatusMessage("Durvis atvērtas. Lūdzu, ievietojiet apavus un aizveriet durvis, lai sāktu tīrīšanas ciklu.");
+            toast({
+                title: "Ievietojiet apavus",
+                description: "Aizveriet durvis, lai sāktu 12 minūšu tīrīšanas ciklu.",
+            });
+
+            await awaitDoorClose();
+
+            setStatusMessage("Durvis aizvērtas. Tīrīšanas cikls sākas...");
+             toast({
+                title: "Cikls sākās",
+                description: "Siltums, UV-C un ventilatori ir ieslēgti uz 12 minūtēm.",
+            });
+
+            // This part runs on the server and won't be interrupted if user navigates away.
+            startCleaningCycle();
+
+            // Navigate away immediately, the cycle runs in the background
             router.push('/?placed=true');
 
         } catch (error) {
             console.error(error);
+            setStatusMessage("Kļūda. Mēģiniet vēlreiz.");
             toast({
                 variant: "destructive",
                 title: "Kļūda",
-                description: (error instanceof Error) ? error.message : "Neizdevās atslēgt durvis.",
+                description: (error instanceof Error) ? error.message : "Neizdevās izpildīt darbību.",
             });
         } finally {
             setIsLoading(false);
@@ -46,7 +70,7 @@ export default function PlacePage() {
                 <CardHeader>
                     <CardTitle className="text-3xl font-headline">Ievietot apavus</CardTitle>
                     <CardDescription>
-                        Nospiediet pogu, lai atslēgtu skapīti, ievietotu apavus un sāktu dezinfekcijas ciklu.
+                        {statusMessage}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col space-y-4">
