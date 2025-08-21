@@ -18,15 +18,19 @@ function getHaConfig() {
 }
 
 function getTwilioConfig() {
-    // Šīs ir testa vērtības, kā norunāts.
-    const accountSid = "AC672cb2e950c918ea787d2e36920e8538";
-    const authToken = "0f0783593147c4f255d1bf1772190163";
-    const twilioPhone = "+12672230874";
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
 
     if (!accountSid || !authToken || !twilioPhone) {
-        console.warn("Twilio dati nav ievadīti home-assistant.ts. Paziņojumi netiks sūtīti.");
+        console.warn("Twilio environment variables (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER) are not set. SMS notifications will be simulated.");
         return { configured: false, client: null, twilioPhone: null };
     }
+     if (accountSid.startsWith('ACxxx') || authToken === 'your_auth_token') {
+        console.warn("Using placeholder Twilio credentials. SMS notifications will be simulated.");
+        return { configured: false, client: null, twilioPhone: null };
+    }
+
 
     const client = Twilio(accountSid, authToken);
     return { configured: true, client, twilioPhone };
@@ -133,7 +137,7 @@ export async function awaitDoorClose() {
 async function sendSmsMessage(to: string, message: string) {
     const { configured, client, twilioPhone } = getTwilioConfig();
     if (!configured || !client || !twilioPhone) {
-        console.log(`Twilio nav konfigurēts. Simulēta SMS ziņa uz ${to}: "${message}"`);
+        console.log(`Twilio nav konfigurēts vai tiek lietotas testa vērtības. Simulēta SMS ziņa uz ${to}: "${message}"`);
         return;
     }
 
