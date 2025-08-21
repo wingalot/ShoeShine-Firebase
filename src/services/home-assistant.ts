@@ -1,5 +1,7 @@
 'use server';
 
+import { getActiveSession, clearActiveSession } from './storage';
+
 function getHaConfig() {
     // VIETTURIS: Lūdzu, aizstājiet šīs vērtības ar savām, ja nepieciešams!
     const HA_URL = "http://192.168.1.101:8123"; 
@@ -111,6 +113,16 @@ export async function awaitDoorClose() {
     await pollDoorState('off'); // 'off' usually means closed
 }
 
+async function sendCompletionNotification() {
+    const session = await getActiveSession();
+    if (session) {
+        // TODO: Replace this with actual WhatsApp bot logic
+        console.log(`SIMULATING WHATSAPP: Sūta ziņu uz ${session.phone}, ka apavi ir gatavi.`);
+        // For example: await sendWhatsAppMessage(session.phone, `Jūsu apavi ir gatavi izņemšanai! Jūsu kods: ${session.code}`);
+    }
+}
+
+
 /**
  * Stops the cleaning cycle by turning off all related switches,
  * and then starts the ventilation cycle.
@@ -129,13 +141,14 @@ export async function stopCleaningCycle() {
         await turnOnSwitch(MOTOR_ENTITY_ID);
         console.log("Motors ieslēgts uz 1 minūti.");
 
-        // Schedule motor to turn off
+        // Schedule motor to turn off and send notification
         setTimeout(async () => {
             try {
                 await turnOffSwitch(MOTOR_ENTITY_ID);
                 console.log("Vēdināšanas cikls beidzies, motors izslēgts.");
+                await sendCompletionNotification();
             } catch (error) {
-                 console.error("Kļūda, izslēdzot motoru:", error);
+                 console.error("Kļūda, izslēdzot motoru vai sūtot paziņojumu:", error);
             }
         }, VENTILATION_CYCLE_DURATION_MS);
 
@@ -171,4 +184,17 @@ export async function startCleaningCycle() {
         // Re-throw the error to be caught by the UI
         throw error;
     }
+}
+
+export async function checkCode(code: string): Promise<boolean> {
+    const session = await getActiveSession();
+    if (session && session.code === code) {
+        return true;
+    }
+    return false;
+}
+
+export async function finishSession() {
+    await clearActiveSession();
+    console.log("Sesija pabeigta, numurs un kods izdzēsti.");
 }

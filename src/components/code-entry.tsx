@@ -14,10 +14,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from 'lucide-react';
-import { unlockDoorAndAwaitOpen } from '@/services/home-assistant';
-
-
-const TEST_CODE = "111111";
+import { unlockDoorAndAwaitOpen, checkCode, finishSession } from '@/services/home-assistant';
 
 interface CodeEntryDialogProps {
   open: boolean;
@@ -32,35 +29,37 @@ export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDial
   const { toast } = useToast();
 
   const handleSubmit = async () => {
-    if (code === TEST_CODE) {
-      setIsLoading(true);
-      setError('');
-      try {
+    setIsLoading(true);
+    setError('');
+    try {
+      const isCodeCorrect = await checkCode(code);
+      if (isCodeCorrect) {
         toast({
           title: "Atslēdz durvis...",
           description: "Lūdzu, atveriet skapīša durvis.",
         });
         await unlockDoorAndAwaitOpen();
+        await finishSession(); // Clear the stored phone number and code
         onSuccess();
         setCode('');
-      } catch (error) {
-        console.error(error);
+      } else {
+        setError('Nepareizs kods. Mēģiniet vēlreiz.');
         toast({
-            variant: "destructive",
-            title: "Kļūda",
-            description: (error instanceof Error) ? error.message : "Neizdevās atslēgt durvis.",
+          variant: "destructive",
+          title: "Kļūda",
+          description: "Ievadītais kods ir nepareizs.",
         });
-      } finally {
-        setIsLoading(false);
+        setCode('');
       }
-    } else {
-      setError('Nepareizs kods. Mēģiniet vēlreiz.');
+    } catch (error) {
+      console.error(error);
       toast({
-        variant: "destructive",
-        title: "Kļūda",
-        description: "Ievadītais kods ir nepareizs.",
+          variant: "destructive",
+          title: "Kļūda",
+          description: (error instanceof Error) ? error.message : "Notika neparedzēta kļūda.",
       });
-      setCode('');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +84,7 @@ export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDial
         <DialogHeader>
           <DialogTitle>Ievadiet kodu</DialogTitle>
           <DialogDescription>
-            Ievadiet kodu, lai atvērtu skapīti. Testa kods ir 111111.
+            Ievadiet kodu, kuru saņēmāt paziņojumā, lai atvērtu skapīti.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

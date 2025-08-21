@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CodeEntryDialog } from '@/components/code-entry';
 import { cn } from '@/lib/utils';
 import { useToast } from "@/hooks/use-toast";
+import { getActiveSession } from '@/services/storage';
 
 export default function Home() {
   const [isOccupied, setIsOccupied] = useState(false);
@@ -16,11 +17,24 @@ export default function Home() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check server state on initial load
+    const checkSession = async () => {
+      const session = await getActiveSession();
+      if (session) {
+        setIsOccupied(true);
+      }
+    };
+    checkSession();
+  }, []);
+
+  useEffect(() => {
     if (searchParams.get('placed') === 'true') {
+      const code = searchParams.get('code');
       setIsOccupied(true);
       toast({
         title: "Apavi ievietoti",
-        description: "Dezinfekcijas cikls ir sācies. Jūsu kods ir 111111.",
+        description: `Dezinfekcijas cikls ir sācies. Jūsu kods ir ${code}. Jūs saņemsiet paziņojumu, kad apavi būs gatavi.`,
+        duration: 10000,
       });
       // Clean the URL
       router.replace('/', {scroll: false});
@@ -30,6 +44,10 @@ export default function Home() {
   const handleUnlockSuccess = () => {
     setIsOccupied(false);
     setIsCodeDialogOpen(false);
+     toast({
+        title: "Skapītis atvērts",
+        description: "Lūdzu, izņemiet savus apavus.",
+      });
   };
 
   return (
@@ -43,8 +61,9 @@ export default function Home() {
           asChild
           size="lg"
           className="w-full h-40 text-3xl font-bold text-primary-foreground bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition-all duration-200 active:scale-95 active:opacity-90"
+          disabled={isOccupied}
         >
-          <Link href="/place">
+          <Link href={isOccupied ? '#' : '/place'}>
             Ievietot apavus
           </Link>
         </Button>

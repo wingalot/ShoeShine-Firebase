@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { unlockDoorAndAwaitOpen, awaitDoorClose, startCleaningCycle } from '@/services/home-assistant';
+import { createSession } from '@/services/storage';
 
 export default function ConfirmPage() {
     const router = useRouter();
@@ -17,8 +18,13 @@ export default function ConfirmPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleStartCycle = async () => {
+        if (!phone) return;
+
         setIsLoading(true);
         try {
+            // Create session and get the code
+            const { code } = await createSession(phone);
+
             toast({
                 title: "Atslēdz durvis...",
                 description: "Lūdzu, atveriet skapīša durvis.",
@@ -39,7 +45,7 @@ export default function ConfirmPage() {
             });
             await startCleaningCycle();
 
-            router.push('/?placed=true');
+            router.push(`/?placed=true&code=${code}`);
 
         } catch (error) {
             console.error("Cikla kļūda:", error);
