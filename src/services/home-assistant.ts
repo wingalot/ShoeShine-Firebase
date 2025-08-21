@@ -19,7 +19,7 @@ const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
 const HEAT_ENTITY_ID = 'switch.sonoff_1000e6fcb0_4';
 const UV_ENTITY_ID = 'switch.sonoff_1000e6fcb0_3';
 const FANS_ENTITY_ID = 'switch.sonoff_1000e6fcb0_2';
-const CLEANING_CYCLE_DURATION_MS = 12 * 60 * 1000; // 12 minutes
+const CLEANING_CYCLE_DURATION_MS = 14 * 60 * 1000; // 14 minutes
 
 async function callService(domain: string, service: string, serviceData: object) {
     const { haUrl, haToken } = getHaConfig();
