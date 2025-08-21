@@ -1,0 +1,38 @@
+{
+  "node": {
+    "008df63600d91d9a8264378ee15ef35eabaca97cb7": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
+      }
+    },
+    "00c3337b8c2cac0f6c3b58dc213e2b378176a07227": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
+      }
+    },
+    "00ff896f99e7593a911e9a4d76d3e311940c7a0e65": {
+      "workers": {
+        "app/place/confirm/page": {
+          "moduleId": "[project]/.next-internal/server/app/place/confirm/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/place/confirm/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}

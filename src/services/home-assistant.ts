@@ -18,12 +18,13 @@ function getHaConfig() {
 }
 
 function getTwilioConfig() {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+    // Šīs ir testa vērtības, kā norunāts.
+    const accountSid = "AC672cb2e950c918ea787d2e36920e8538";
+    const authToken = "0f0783593147c4f255d1bf1772190163";
+    const twilioPhone = "+12672230874";
 
     if (!accountSid || !authToken || !twilioPhone) {
-        console.warn("Twilio nav pilnībā konfigurēts .env failā. Paziņojumi netiks sūtīti.");
+        console.warn("Twilio dati nav ievadīti home-assistant.ts. Paziņojumi netiks sūtīti.");
         return { configured: false, client: null, twilioPhone: null };
     }
 

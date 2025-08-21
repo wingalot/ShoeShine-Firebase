@@ -1,0 +1,49 @@
+{
+  "node": {
+    "000d00a7e5ee24027cbe0eb5814f088db3497c2a5a": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "008df63600d91d9a8264378ee15ef35eabaca97cb7": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "402f3b69476f44da7dfc58196ae17593eafa89c5f8": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "008fffe3e34bf53ce2c670697b947f58dcf79d32bf": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}
