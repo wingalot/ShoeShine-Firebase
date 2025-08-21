@@ -1,5 +1,7 @@
 'use server';
 
+import 'dotenv/config';
+
 const LOCK_ENTITY_ID = 'switch.sonoff_1000e6fcb0_1';
 const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
 
