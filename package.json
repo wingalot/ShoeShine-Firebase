@@ -8,6 +8,7 @@
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
     "start": "next start",
+    "start:kiosk": "npm run build && (next start & (sleep 5 && chromium-browser --kiosk http://localhost:3000))",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
