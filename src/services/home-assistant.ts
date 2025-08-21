@@ -31,6 +31,7 @@ async function callService(domain: string, service: string, serviceData: object)
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(serviceData),
+        cache: 'no-store' // Ensure fresh calls every time
     });
 
     if (!response.ok) {
@@ -50,6 +51,7 @@ async function getEntityState(entityId: string): Promise<{ state: string }> {
             'Authorization': `Bearer ${haToken}`,
             'Content-Type': 'application/json',
         },
+        cache: 'no-store' // Ensure fresh state is read
     });
 
     if (!response.ok) {
@@ -78,7 +80,7 @@ async function pollDoorState(targetState: 'on' | 'off', timeout = 30000, interva
         }
         await new Promise(resolve => setTimeout(resolve, interval));
     }
-    throw new Error(`Durvis nesasniedza stāvokli '${targetState}' laikā.`);
+    throw new Error(`Laika limits (30s) pārsniegts, gaidot durvju stāvokli: '${targetState}'.`);
 }
 
 /**
@@ -106,31 +108,8 @@ export async function awaitDoorClose() {
     await pollDoorState('off'); // 'off' usually means closed
 }
 
-
 /**
- * Starts the cleaning cycle and schedules it to stop.
- */
-export async function startCleaningCycle() {
-    console.log("Sākas tīrīšanas cikls...");
-    try {
-        await Promise.all([
-            turnOnSwitch(HEAT_ENTITY_ID),
-            turnOnSwitch(UV_ENTITY_ID),
-            turnOnSwitch(FANS_ENTITY_ID)
-        ]);
-        console.log("Siltums, UV-C un ventilatori ir ieslēgti.");
-
-        // Schedule the stop function
-        setTimeout(stopCleaningCycle, CLEANING_CYCLE_DURATION_MS);
-    } catch (error) {
-        console.error("Kļūda, sākot tīrīšanas ciklu:", error);
-        // Attempt to turn everything off in case of a partial failure
-        await stopCleaningCycle();
-    }
-}
-
-/**
- * Stops the cleaning cycle.
+ * Stops the cleaning cycle by turning off all related switches.
  */
 export async function stopCleaningCycle() {
     console.log("Beidzas tīrīšanas cikls...");
@@ -143,5 +122,34 @@ export async function stopCleaningCycle() {
         console.log("Siltums, UV-C un ventilatori ir izslēgti.");
     } catch (error) {
         console.error("Kļūda, beidzot tīrīšanas ciklu:", error);
+    }
+}
+
+/**
+ * Starts the cleaning cycle and schedules it to stop.
+ * This function runs on the server and is not blocking.
+ */
+export async function startCleaningCycle() {
+    console.log("Sākas tīrīšanas cikls servera pusē...");
+    try {
+        await Promise.all([
+            turnOnSwitch(HEAT_ENTITY_ID),
+            turnOnSwitch(UV_ENTITY_ID),
+            turnOnSwitch(FANS_ENTITY_ID)
+        ]);
+        console.log("Siltums, UV-C un ventilatori ir ieslēgti.");
+
+        // Schedule the stop function to run after the duration.
+        // This runs on the server and will not be interrupted if the user navigates away.
+        setTimeout(stopCleaningCycle, CLEANING_CYCLE_DURATION_MS);
+
+        console.log(`Tīrīšanas cikls beigsies pēc ${CLEANING_CYCLE_DURATION_MS / 1000 / 60} minūtēm.`);
+        
+    } catch (error) {
+        console.error("Kļūda, sākot tīrīšanas ciklu:", error);
+        // Attempt to turn everything off in case of a partial failure
+        await stopCleaningCycle();
+        // Re-throw the error to be caught by the UI
+        throw error;
     }
 }

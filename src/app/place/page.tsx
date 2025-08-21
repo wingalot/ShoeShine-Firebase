@@ -10,8 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
     unlockDoorAndAwaitOpen, 
     awaitDoorClose,
-    startCleaningCycle,
-    stopCleaningCycle
+    startCleaningCycle
 } from '@/services/home-assistant';
 
 
@@ -46,18 +45,19 @@ export default function PlacePage() {
             });
 
             // This part runs on the server and won't be interrupted if user navigates away.
-            startCleaningCycle();
+            await startCleaningCycle();
 
             // Navigate away immediately, the cycle runs in the background
             router.push('/?placed=true');
 
         } catch (error) {
             console.error(error);
-            setStatusMessage("Kļūda. Mēģiniet vēlreiz.");
+            const errorMessage = (error instanceof Error) ? error.message : "Neizdevās izpildīt darbību.";
+            setStatusMessage(`Kļūda: ${errorMessage}`);
             toast({
                 variant: "destructive",
                 title: "Kļūda",
-                description: (error instanceof Error) ? error.message : "Neizdevās izpildīt darbību.",
+                description: errorMessage,
             });
         } finally {
             setIsLoading(false);
