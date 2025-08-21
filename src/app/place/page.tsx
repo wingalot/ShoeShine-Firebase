@@ -18,7 +18,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
 import { Numpad } from '@/components/ui/numpad';
 
 const formSchema = z.object({
@@ -31,7 +30,6 @@ const formSchema = z.object({
 
 export default function PlacePage() {
     const router = useRouter();
-    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -41,13 +39,7 @@ export default function PlacePage() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Pagaidām tikai paziņojums, nākamajā solī pievienosim tālāko loģiku.
-        console.log("Ievadītais numurs:", values.phone);
-        toast({
-            title: "Numurs pieņemts",
-            description: `Jūsu numurs ${values.phone} ir saglabāts.`,
-        });
-        // TODO: Pievienot tālāko cikla loģiku šeit.
+        router.push(`/place/confirm?phone=${values.phone}`);
     }
 
     const handleKeyPress = (key: string) => {
