@@ -1,6 +1,7 @@
 'use server';
 
 import { getActiveSession, clearActiveSession } from './storage';
+import Twilio from 'twilio';
 
 function getHaConfig() {
     // VIETTURIS: Lūdzu, aizstājiet šīs vērtības ar savām, ja nepieciešams!
@@ -15,6 +16,21 @@ function getHaConfig() {
     
     return { haUrl: HA_URL, haToken: HA_TOKEN };
 }
+
+function getTwilioConfig() {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+
+    if (!accountSid || !authToken || !twilioPhone) {
+        console.warn("Twilio nav pilnībā konfigurēts .env failā. Paziņojumi netiks sūtīti.");
+        return { configured: false, client: null, twilioPhone: null };
+    }
+
+    const client = Twilio(accountSid, authToken);
+    return { configured: true, client, twilioPhone };
+}
+
 
 const LOCK_ENTITY_ID = 'switch.sonoff_1000e6fcb0_1';
 const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
@@ -113,12 +129,32 @@ export async function awaitDoorClose() {
     await pollDoorState('off'); // 'off' usually means closed
 }
 
+async function sendWhatsAppMessage(to: string, message: string) {
+    const { configured, client, twilioPhone } = getTwilioConfig();
+    if (!configured || !client || !twilioPhone) {
+        console.log(`Twilio nav konfigurēts. Simulēta ziņa uz ${to}: "${message}"`);
+        return;
+    }
+
+    try {
+        await client.messages.create({
+            body: message,
+            from: twilioPhone, // Twilio WhatsApp numurs
+            to: `whatsapp:+371${to}` // Saņēmēja numurs ar valsts kodu
+        });
+        console.log(`WhatsApp ziņa veiksmīgi nosūtīta uz ${to}`);
+    } catch (error) {
+        console.error(`Kļūda sūtot WhatsApp ziņu uz ${to}:`, error);
+        // Neizmetam kļūdu, jo paziņojuma nenosūtīšana nav kritiska
+    }
+}
+
+
 async function sendCompletionNotification() {
     const session = await getActiveSession();
     if (session) {
-        // TODO: Replace this with actual WhatsApp bot logic
-        console.log(`SIMULATING WHATSAPP: Sūta ziņu uz ${session.phone}, ka apavi ir gatavi.`);
-        // For example: await sendWhatsAppMessage(session.phone, `Jūsu apavi ir gatavi izņemšanai! Jūsu kods: ${session.code}`);
+        const message = `Jūsu apavi ir gatavi izņemšanai! Lūdzu, izmantojiet kodu, lai atvērtu skapīti: ${session.code}`;
+        await sendWhatsAppMessage(session.phone, message);
     }
 }
 
