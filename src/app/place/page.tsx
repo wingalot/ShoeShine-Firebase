@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Numpad } from '@/components/ui/numpad';
 
 const formSchema = z.object({
   phone: z.string().length(8, {
@@ -48,6 +49,18 @@ export default function PlacePage() {
         });
         // TODO: Pievienot tālāko cikla loģiku šeit.
     }
+
+    const handleKeyPress = (key: string) => {
+        const currentValue = form.getValues("phone");
+        if (currentValue.length < 8) {
+            form.setValue("phone", currentValue + key, { shouldValidate: true });
+        }
+    };
+
+    const handleDelete = () => {
+        const currentValue = form.getValues("phone");
+        form.setValue("phone", currentValue.slice(0, -1), { shouldValidate: true });
+    };
     
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-background p-8">
@@ -68,12 +81,20 @@ export default function PlacePage() {
                                     <FormItem>
                                         <FormLabel>Telefona numurs</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="________" {...field} type="tel" maxLength={8} />
+                                            <Input 
+                                                placeholder="________" 
+                                                {...field} 
+                                                type="tel" 
+                                                maxLength={8} 
+                                                readOnly 
+                                                className="text-center text-2xl tracking-[.2em]"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                             <Numpad onKeyPress={handleKeyPress} onDelete={handleDelete} />
                             <Button
                                 type="submit"
                                 size="lg"
