@@ -82,7 +82,9 @@ export default function PlacePage() {
                                                 className="text-center text-2xl tracking-[.2em]"
                                             />
                                         </FormControl>
-                                        <FormMessage />
+                                        <div className="text-center">
+                                            <FormMessage />
+                                        </div>
                                     </FormItem>
                                 )}
                             />
