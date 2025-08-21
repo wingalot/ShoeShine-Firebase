@@ -8,7 +8,7 @@ function getHaConfig() {
     const HA_TOKEN = process.env.HA_TOKEN;
 
     if (!HA_URL || !HA_TOKEN) {
-        console.warn("Home Assistant URL or Token is not configured. Door control will not work.");
+        console.error("Home Assistant URL or Token is not configured. Door control will not work.");
         throw new Error('Home Assistant nav konfigurēts.');
     }
     
