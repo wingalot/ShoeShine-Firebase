@@ -1,11 +1,12 @@
 'use server';
 
 function getHaConfig() {
-    const HA_URL = process.env.HA_URL;
-    const HA_TOKEN = process.env.HA_TOKEN;
+    // VIETTURIS: Lūdzu, aizstājiet šīs vērtības ar savām!
+    const HA_URL = "http://192.168.1.101:8123"; 
+    const HA_TOKEN = "AIZSTĀJIET_AR_SAVU_LONG_LIVED_TOKENU";
 
-    if (!HA_URL || !HA_TOKEN) {
-        console.error("CRITICAL: getHaConfig() failed. HA_URL or HA_TOKEN is missing from .env file.");
+    if (!HA_URL || !HA_TOKEN || HA_TOKEN === "AIZSTĀJIET_AR_SAVU_LONG_LIVED_TOKENU") {
+        console.error("CRITICAL: getHaConfig() failed. HA_URL or HA_TOKEN is not set in src/services/home-assistant.ts.");
         console.error(`Values found: HA_URL=${HA_URL}, HA_TOKEN is ${HA_TOKEN ? 'present' : 'missing'}`);
         throw new Error('Home Assistant nav konfigurēts.');
     }
