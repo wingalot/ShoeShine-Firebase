@@ -18,12 +18,12 @@ function getHaConfig() {
 }
 
 function getTwilioConfig() {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+    const accountSid = "AC672cb2e950c918ea787d2e36920e8538";
+    const authToken = "0f0783593147c4f255d1bf1772190163";
+    const twilioPhone = "+12672230874";
 
     if (!accountSid || !authToken || !twilioPhone) {
-        console.warn("Twilio nav pilnībā konfigurēts .env failā. Paziņojumi netiks sūtīti.");
+        console.warn("Twilio nav pilnībā konfigurēts. Paziņojumi netiks sūtīti.");
         return { configured: false, client: null, twilioPhone: null };
     }
 
@@ -129,22 +129,22 @@ export async function awaitDoorClose() {
     await pollDoorState('off'); // 'off' usually means closed
 }
 
-async function sendWhatsAppMessage(to: string, message: string) {
+async function sendSmsMessage(to: string, message: string) {
     const { configured, client, twilioPhone } = getTwilioConfig();
     if (!configured || !client || !twilioPhone) {
-        console.log(`Twilio nav konfigurēts. Simulēta ziņa uz ${to}: "${message}"`);
+        console.log(`Twilio nav konfigurēts. Simulēta SMS ziņa uz ${to}: "${message}"`);
         return;
     }
 
     try {
         await client.messages.create({
             body: message,
-            from: twilioPhone, // Twilio WhatsApp numurs
-            to: `whatsapp:+371${to}` // Saņēmēja numurs ar valsts kodu
+            from: twilioPhone,
+            to: `+371${to}` // Pievienojam Latvijas kodu
         });
-        console.log(`WhatsApp ziņa veiksmīgi nosūtīta uz ${to}`);
+        console.log(`SMS ziņa veiksmīgi nosūtīta uz ${to}`);
     } catch (error) {
-        console.error(`Kļūda sūtot WhatsApp ziņu uz ${to}:`, error);
+        console.error(`Kļūda sūtot SMS ziņu uz ${to}:`, error);
         // Neizmetam kļūdu, jo paziņojuma nenosūtīšana nav kritiska
     }
 }
@@ -153,8 +153,8 @@ async function sendWhatsAppMessage(to: string, message: string) {
 async function sendCompletionNotification() {
     const session = await getActiveSession();
     if (session) {
-        const message = `Jūsu apavi ir gatavi izņemšanai! Lūdzu, izmantojiet kodu, lai atvērtu skapīti: ${session.code}`;
-        await sendWhatsAppMessage(session.phone, message);
+        const message = `Jūsu apavi ir gatavi izņemšanai. Kods, lai atvērtu durtiņas - ${session.code}`;
+        await sendSmsMessage(session.phone, message);
     }
 }
 

@@ -51,8 +51,8 @@ export async function createSession(phone: string): Promise<Session> {
         throw new Error("Another session is already in progress.");
     }
 
-    // For now, use a fixed code. In a real app, you'd generate a random one.
-    const code = "111111"; 
+    // Generate a random 6-digit code.
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const newSession: Session = {
         phone: phone,
