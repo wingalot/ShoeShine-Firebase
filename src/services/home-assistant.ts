@@ -1,22 +1,20 @@
 'use server';
 
-import 'dotenv/config';
-
-const LOCK_ENTITY_ID = 'switch.sonoff_1000e6fcb0_1';
-const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
-
 function getHaConfig() {
     const HA_URL = process.env.HA_URL;
     const HA_TOKEN = process.env.HA_TOKEN;
 
     if (!HA_URL || !HA_TOKEN) {
-        console.error("Home Assistant URL or Token is not configured. Door control will not work.");
+        console.error("CRITICAL: getHaConfig() failed. HA_URL or HA_TOKEN is missing from .env file.");
+        console.error(`Values found: HA_URL=${HA_URL}, HA_TOKEN is ${HA_TOKEN ? 'present' : 'missing'}`);
         throw new Error('Home Assistant nav konfigurēts.');
     }
     
     return { haUrl: HA_URL, haToken: HA_TOKEN };
 }
 
+const LOCK_ENTITY_ID = 'switch.sonoff_1000e6fcb0_1';
+const DOOR_SENSOR_ENTITY_ID = 'binary_sensor.1_durvis_durvis';
 
 async function callService(domain: string, service: string, serviceData: object) {
     const { haUrl, haToken } = getHaConfig();
