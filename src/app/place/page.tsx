@@ -66,9 +66,9 @@ export default function PlacePage() {
         <main className="flex min-h-screen flex-col items-center justify-center bg-background p-8">
             <Card className="w-full max-w-md shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-3xl font-headline">Ievietot apavus</CardTitle>
-                    <CardDescription>
-                        Lūdzu, ievadiet savu telefona numuru (8 cipari), lai mēs varētu jūs informēt, kad cikls būs pabeigts.
+                    <CardTitle className="text-3xl font-headline text-center">Ievietot apavus</CardTitle>
+                    <CardDescription className="text-center">
+                        Lūdzu, ievadiet savu telefona numuru, lai varam jūs informēt, kad apavi ir iztīrīti.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col space-y-4">
@@ -79,7 +79,7 @@ export default function PlacePage() {
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Telefona numurs</FormLabel>
+                                        <FormLabel className="w-full text-center block">Telefona numurs</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 placeholder="________" 
@@ -98,7 +98,8 @@ export default function PlacePage() {
                             <Button
                                 type="submit"
                                 size="lg"
-                                className="w-full h-16 text-xl font-bold text-primary-foreground bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition-all duration-200 active:scale-95 active:opacity-90"
+                                className="w-full h-16 text-xl font-bold text-primary-foreground bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition-all duration-200 active:scale-95 active:opacity-90 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed"
+                                disabled={!form.formState.isValid}
                             >
                                 Ievadīt
                             </Button>
