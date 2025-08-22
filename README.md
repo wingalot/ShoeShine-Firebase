@@ -33,6 +33,7 @@ This is a Next.js application for controlling a shoe disinfection cabinet, integ
     npm start
     ```
 
-The application will then be available on your local network. You can access it by opening a web browser and navigating to `http://<your-raspberry-pi-ip>:3000`. For example, if your Raspberry Pi's IP address is `192.168.1.145`, you would go to `http://192.168.1.145:3000`.
+The application will then be available on your local network. You can access it by opening a web browser and navigating to `http://<your-raspberry-pi-ip>:3000`. For example, if your Raspberry Pi's IP address is `192.168.8.118`, you would go to `http://192.168.8.118:3000`.
 
 Your Home Assistant credentials are included in the `.env` file. For a production application, you should use a `.gitignore` file to prevent this file from being committed to version control.
+

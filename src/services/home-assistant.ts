@@ -5,7 +5,7 @@ import Twilio from 'twilio';
 
 function getHaConfig() {
     // VIETTURIS: Lūdzu, aizstājiet šīs vērtības ar savām, ja nepieciešams!
-    const HA_URL = "http://192.168.1.101:8123"; 
+    const HA_URL = "http://192.168.8.120:8123"; 
     const HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjMTE4MjQwNjdlYTc0NWI5YTllOGFmMjcxNDViNWQwOSIsImlhdCI6MTc1NTc3NDk4NiwiZXhwIjoyMDcxMTM0OTg2fQ.tKjaJlcFP6TQteVXKV9YUIy5lY0UXR8Od5FSv-D-USo";
 
     if (!HA_URL || !HA_TOKEN || HA_TOKEN === "AIZSTĀJIET_AR_SAVU_LONG_LIVED_TOKENU") {
