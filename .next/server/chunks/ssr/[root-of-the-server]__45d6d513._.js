@@ -213,10 +213,11 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-/* __next_internal_action_entry_do_not_use__ [{"00027fe208bf50e5661920fb5dc11c0a41340fb25f":"stopCleaningCycle","008df63600d91d9a8264378ee15ef35eabaca97cb7":"unlockDoorAndAwaitOpen","008fffe3e34bf53ce2c670697b947f58dcf79d32bf":"finishSession","00c3337b8c2cac0f6c3b58dc213e2b378176a07227":"awaitDoorClose","00ff896f99e7593a911e9a4d76d3e311940c7a0e65":"startCleaningCycle","402f3b69476f44da7dfc58196ae17593eafa89c5f8":"checkCode"},"",""] */ __turbopack_context__.s({
+/* __next_internal_action_entry_do_not_use__ [{"00027fe208bf50e5661920fb5dc11c0a41340fb25f":"stopCleaningCycle","008df63600d91d9a8264378ee15ef35eabaca97cb7":"unlockDoorAndAwaitOpen","008fffe3e34bf53ce2c670697b947f58dcf79d32bf":"finishSession","00a044523e88c7e353cac9adc9b30c6a06e0a80440":"forceResetState","00c3337b8c2cac0f6c3b58dc213e2b378176a07227":"awaitDoorClose","00ff896f99e7593a911e9a4d76d3e311940c7a0e65":"startCleaningCycle","402f3b69476f44da7dfc58196ae17593eafa89c5f8":"checkCode"},"",""] */ __turbopack_context__.s({
     "awaitDoorClose": (()=>awaitDoorClose),
     "checkCode": (()=>checkCode),
     "finishSession": (()=>finishSession),
+    "forceResetState": (()=>forceResetState),
     "startCleaningCycle": (()=>startCleaningCycle),
     "stopCleaningCycle": (()=>stopCleaningCycle),
     "unlockDoorAndAwaitOpen": (()=>unlockDoorAndAwaitOpen)
@@ -430,6 +431,26 @@ async function finishSession() {
     await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["clearActiveSession"])();
     console.log("Sesija pabeigta, numurs un kods izdzēsti.");
 }
+async function forceResetState() {
+    console.warn("Piespiedu atiestatīšana sākta...");
+    try {
+        await Promise.allSettled([
+            turnOffSwitch(LOCK_ENTITY_ID),
+            turnOffSwitch(HEAT_ENTITY_ID),
+            turnOffSwitch(UV_ENTITY_ID),
+            turnOffSwitch(FANS_ENTITY_ID),
+            turnOffSwitch(MOTOR_ENTITY_ID)
+        ]);
+        console.log("Visi slēdži ir izslēgti.");
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["clearActiveSession"])();
+        console.log("Iesprūdusī sesija notīrīta. Sistēma atiestatīta.");
+    } catch (error) {
+        console.error("Kļūda, veicot piespiedu atiestatīšanu:", error);
+        // Even if there's an error, try to clear the session
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["clearActiveSession"])().catch((e)=>console.error("Neizdevās notīrīt sesiju pēc atiestatīšanas kļūdas:", e));
+        throw new Error("Kļūda, veicot atiestatīšanu. Pārbaudiet konsoli.");
+    }
+}
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([
     unlockDoorAndAwaitOpen,
@@ -437,7 +458,8 @@ async function finishSession() {
     stopCleaningCycle,
     startCleaningCycle,
     checkCode,
-    finishSession
+    finishSession,
+    forceResetState
 ]);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(unlockDoorAndAwaitOpen, "008df63600d91d9a8264378ee15ef35eabaca97cb7", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(awaitDoorClose, "00c3337b8c2cac0f6c3b58dc213e2b378176a07227", null);
@@ -445,6 +467,7 @@ async function finishSession() {
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(startCleaningCycle, "00ff896f99e7593a911e9a4d76d3e311940c7a0e65", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(checkCode, "402f3b69476f44da7dfc58196ae17593eafa89c5f8", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(finishSession, "008fffe3e34bf53ce2c670697b947f58dcf79d32bf", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(forceResetState, "00a044523e88c7e353cac9adc9b30c6a06e0a80440", null);
 }}),
 "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript) <locals>": ((__turbopack_context__) => {
 "use strict";
@@ -454,6 +477,7 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({});
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/services/storage.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)");
+;
 ;
 ;
 ;
@@ -478,6 +502,7 @@ __turbopack_context__.s({
     "000d00a7e5ee24027cbe0eb5814f088db3497c2a5a": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getActiveSession"]),
     "008df63600d91d9a8264378ee15ef35eabaca97cb7": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["unlockDoorAndAwaitOpen"]),
     "008fffe3e34bf53ce2c670697b947f58dcf79d32bf": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["finishSession"]),
+    "00a044523e88c7e353cac9adc9b30c6a06e0a80440": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["forceResetState"]),
     "402f3b69476f44da7dfc58196ae17593eafa89c5f8": (()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["checkCode"])
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/services/storage.ts [app-rsc] (ecmascript)");
@@ -493,6 +518,7 @@ __turbopack_context__.s({
     "000d00a7e5ee24027cbe0eb5814f088db3497c2a5a": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["000d00a7e5ee24027cbe0eb5814f088db3497c2a5a"]),
     "008df63600d91d9a8264378ee15ef35eabaca97cb7": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["008df63600d91d9a8264378ee15ef35eabaca97cb7"]),
     "008fffe3e34bf53ce2c670697b947f58dcf79d32bf": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["008fffe3e34bf53ce2c670697b947f58dcf79d32bf"]),
+    "00a044523e88c7e353cac9adc9b30c6a06e0a80440": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["00a044523e88c7e353cac9adc9b30c6a06e0a80440"]),
     "402f3b69476f44da7dfc58196ae17593eafa89c5f8": (()=>__TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$exports$3e$__["402f3b69476f44da7dfc58196ae17593eafa89c5f8"])
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f2e$next$2d$internal$2f$server$2f$app$2f$page$2f$actions$2e$js__$7b$__ACTIONS_MODULE0__$3d3e$__$225b$project$5d2f$src$2f$services$2f$storage$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29222c$__ACTIONS_MODULE1__$3d3e$__$225b$project$5d2f$src$2f$services$2f$home$2d$assistant$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$2922$__$7d$__$5b$app$2d$rsc$5d$__$28$server__actions__loader$2c$__ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i('[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => "[project]/src/services/storage.ts [app-rsc] (ecmascript)", ACTIONS_MODULE1 => "[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) <module evaluation>');

@@ -11,6 +11,17 @@
         "app/page": "action-browser"
       }
     },
+    "00a044523e88c7e353cac9adc9b30c6a06e0a80440": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/services/storage.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/services/home-assistant.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
     "008df63600d91d9a8264378ee15ef35eabaca97cb7": {
       "workers": {
         "app/page": {

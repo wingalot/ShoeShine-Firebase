@@ -8,10 +8,25 @@ import { CodeEntryDialog } from '@/components/code-entry';
 import { cn } from '@/lib/utils';
 import { useToast } from "@/hooks/use-toast";
 import { getActiveSession } from '@/services/storage';
+import { forceResetState } from '@/services/home-assistant';
+import { ShieldAlert } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 export default function Home() {
   const [isOccupied, setIsOccupied] = useState(false);
   const [isCodeDialogOpen, setIsCodeDialogOpen] = useState(false);
+  const [showReset, setShowReset] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -22,6 +37,14 @@ export default function Home() {
       const session = await getActiveSession();
       if (session) {
         setIsOccupied(true);
+        
+        // If the session start time is more than 30 minutes ago,
+        // assume it's a stuck session from a restart.
+        const startTime = new Date(session.startTime).getTime();
+        const now = new Date().getTime();
+        if (now - startTime > 30 * 60 * 1000) {
+            setShowReset(true);
+        }
       }
     };
     checkSession();
@@ -31,6 +54,7 @@ export default function Home() {
     if (searchParams.get('placed') === 'true') {
       const code = searchParams.get('code');
       setIsOccupied(true);
+      setShowReset(false);
       toast({
         title: "Apavi ievietoti",
         description: `Dezinfekcijas cikls ir sācies. Jūsu kods ir ${code}. Jūs saņemsiet paziņojumu, kad apavi būs gatavi.`,
@@ -43,11 +67,30 @@ export default function Home() {
 
   const handleUnlockSuccess = () => {
     setIsOccupied(false);
+    setShowReset(false);
     setIsCodeDialogOpen(false);
      toast({
         title: "Skapītis atvērts",
         description: "Lūdzu, izņemiet savus apavus.",
       });
+  };
+
+  const handleForceReset = async () => {
+    try {
+        await forceResetState();
+        setIsOccupied(false);
+        setShowReset(false);
+        toast({
+            title: "Sistēma atiestatīta",
+            description: "Iesprūdusī sesija ir notīrīta. Sistēma ir gatava darbam.",
+        });
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Kļūda",
+            description: "Neizdevās atiestatīt sistēmu. Pārbaudiet konsoli.",
+        });
+    }
   };
 
   return (
@@ -76,6 +119,28 @@ export default function Home() {
           Izņemt apavus
         </Button>
       </div>
+
+      {showReset && (
+         <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" className="absolute bottom-4 right-4">
+                <ShieldAlert className="mr-2 h-4 w-4" /> Piespiedu Atiestatīšana
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Vai esat pārliecināts?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Šī darbība piespiedu kārtā atiestatīs sistēmas stāvokli, izslēgs visas iekārtas un notīrīs iesprūdušo sesiju. Izmantojiet tikai tad, ja sistēma nereaģē pēc restarta.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Atcelt</AlertDialogCancel>
+              <AlertDialogAction onClick={handleForceReset}>Jā, atiestatīt</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
 
       <CodeEntryDialog
         open={isCodeDialogOpen}

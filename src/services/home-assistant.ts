@@ -239,3 +239,30 @@ export async function finishSession() {
     await clearActiveSession();
     console.log("Sesija pabeigta, numurs un kods izdzēsti.");
 }
+
+/**
+ * Forcefully resets the system state.
+ * Turns off all switches and clears the active session.
+ * To be used when the system is stuck after a restart.
+ */
+export async function forceResetState() {
+    console.warn("Piespiedu atiestatīšana sākta...");
+    try {
+        await Promise.allSettled([
+            turnOffSwitch(LOCK_ENTITY_ID),
+            turnOffSwitch(HEAT_ENTITY_ID),
+            turnOffSwitch(UV_ENTITY_ID),
+            turnOffSwitch(FANS_ENTITY_ID),
+            turnOffSwitch(MOTOR_ENTITY_ID),
+        ]);
+        console.log("Visi slēdži ir izslēgti.");
+
+        await clearActiveSession();
+        console.log("Iesprūdusī sesija notīrīta. Sistēma atiestatīta.");
+    } catch (error) {
+        console.error("Kļūda, veicot piespiedu atiestatīšanu:", error);
+        // Even if there's an error, try to clear the session
+        await clearActiveSession().catch(e => console.error("Neizdevās notīrīt sesiju pēc atiestatīšanas kļūdas:", e));
+        throw new Error("Kļūda, veicot atiestatīšanu. Pārbaudiet konsoli.");
+    }
+}
