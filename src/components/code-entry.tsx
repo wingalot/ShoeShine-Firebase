@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from 'lucide-react';
 import { unlockDoorAndAwaitOpen, checkCode, finishSession } from '@/services/home-assistant';
+import { Numpad } from '@/components/ui/numpad';
 
 interface CodeEntryDialogProps {
   open: boolean;
@@ -27,6 +28,18 @@ export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDial
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleKeyPress = (key: string) => {
+    // A 6-digit code is expected
+    if (code.length < 6) {
+        setCode(prevCode => prevCode + key);
+    }
+  };
+
+  const handleDelete = () => {
+      setCode(prevCode => prevCode.slice(0, -1));
+  };
+
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -88,29 +101,26 @@ export function CodeEntryDialog({ open, onOpenChange, onSuccess }: CodeEntryDial
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="code" className="text-right">
+            <Label htmlFor="code" className="text-center">
               Kods
             </Label>
             <Input
               id="code"
               value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="col-span-3"
-              type="password"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !isLoading) {
-                  handleSubmit();
-                }
-              }}
-              autoFocus
+              readOnly
+              className="text-center text-2xl tracking-[.2em]"
+              placeholder="______"
+              maxLength={6}
               disabled={isLoading}
             />
-          </div>
-          {error && <p className="text-sm font-medium text-destructive text-center col-span-4">{error}</p>}
+            {error && <p className="text-sm font-medium text-destructive text-center col-span-4">{error}</p>}
+            <Numpad onKeyPress={handleKeyPress} onDelete={handleDelete} />
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit} disabled={isLoading}>
+           <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={isLoading}>
+            Atcelt
+          </Button>
+          <Button type="submit" onClick={handleSubmit} disabled={isLoading || code.length < 6}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Apstiprināt
           </Button>
