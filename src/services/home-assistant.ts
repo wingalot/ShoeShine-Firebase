@@ -22,8 +22,8 @@ function getTwilioConfig() {
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
 
-    if (!accountSid || !authToken || !twilioPhone || accountSid.includes('ACxxx') || authToken.includes('your_auth_token')) {
-        console.warn("Twilio environment variables (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER) are not set or contain placeholder values. SMS notifications will be simulated.");
+    if (!accountSid || !authToken || !twilioPhone) {
+        console.warn("Twilio environment variables (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER) are not set. SMS notifications will be simulated.");
         return { configured: false, client: null, twilioPhone: null };
     }
 
@@ -133,7 +133,7 @@ export async function awaitDoorClose() {
 async function sendSmsMessage(to: string, message: string) {
     const { configured, client, twilioPhone } = getTwilioConfig();
     if (!configured || !client || !twilioPhone) {
-        console.log(`Twilio nav konfigurēts vai tiek lietotas testa vērtības. Simulēta SMS ziņa uz ${to}: "${message}"`);
+        console.log(`Twilio nav konfigurēts. Simulēta SMS ziņa uz ${to}: "${message}"`);
         return;
     }
 
